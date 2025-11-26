@@ -1,20 +1,13 @@
 package com.example.demo.domain;
 
+import com.example.demo.domain.enums.StatusProduto;
+import com.fasterxml.jackson.annotation.JsonIgnore;
+import jakarta.persistence.*;
 import java.io.Serializable;
 import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
-
-import com.fasterxml.jackson.annotation.JsonIgnore;
-import jakarta.persistence.Column;
-import jakarta.persistence.Entity;
-import jakarta.persistence.GeneratedValue;
-import jakarta.persistence.GenerationType;
-import jakarta.persistence.Id;
-import jakarta.persistence.JoinColumn;
-import jakarta.persistence.ManyToOne;
-import jakarta.persistence.OneToMany;
 
 @Entity
 public class Produto implements Serializable {
@@ -28,6 +21,9 @@ public class Produto implements Serializable {
     private String sku;
     private String nome;
     private BigDecimal precoCusto;
+
+    @Enumerated(EnumType.STRING)
+    private StatusProduto status;
 
     @ManyToOne
     @JoinColumn(name = "categoria_id")
@@ -44,11 +40,12 @@ public class Produto implements Serializable {
     public Produto() {
     }
 
-    public Produto(Integer id, String sku, String nome, BigDecimal precoCusto, Categoria categoria, Localizacao localizacao) {
+    public Produto(Integer id, String sku, String nome, BigDecimal precoCusto, StatusProduto status, Categoria categoria, Localizacao localizacao) {
         this.id = id;
         this.sku = sku;
         this.nome = nome;
         this.precoCusto = precoCusto;
+        this.status = status;
         this.categoria = categoria;
         this.localizacao = localizacao;
     }
@@ -83,6 +80,14 @@ public class Produto implements Serializable {
 
     public void setPrecoCusto(BigDecimal precoCusto) {
         this.precoCusto = precoCusto;
+    }
+
+    public StatusProduto getStatus() {
+        return status;
+    }
+
+    public void setStatus(StatusProduto status) {
+        this.status = status;
     }
 
     public Categoria getCategoria() {

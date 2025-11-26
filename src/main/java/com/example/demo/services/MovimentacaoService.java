@@ -1,9 +1,12 @@
 package com.example.demo.services;
 
 import com.example.demo.domain.Movimentacao;
+import com.example.demo.domain.Usuario;
+import com.example.demo.domain.enums.StatusUsuario;
 import com.example.demo.dtos.MovimentacaoDTO;
 import com.example.demo.mappers.MovimentacaoMapper;
 import com.example.demo.repositories.MovimentacaoRepository;
+import com.example.demo.services.exceptions.DataIntegrityViolationException;
 import com.example.demo.services.exceptions.ObjectNotFoundException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -22,6 +25,9 @@ public class MovimentacaoService {
     @Autowired
     private MovimentacaoMapper mapper;
 
+    @Autowired
+    private UsuarioService usuarioService;
+
     @Transactional(readOnly = true)
     public Movimentacao findById(Integer id) {
         return repository.findById(id).orElseThrow(() -> new ObjectNotFoundException("Objeto não encontrado! Id: " + id));
@@ -34,6 +40,11 @@ public class MovimentacaoService {
 
     @Transactional
     public Movimentacao create(MovimentacaoDTO objDTO) {
+        Usuario usuario = usuarioService.findById(objDTO.getUsuarioId());
+        if (usuario.getStatus() == StatusUsuario.INATIVO) {
+            throw new DataIntegrityViolationException("Não é possível criar movimentação para um usuário INATIVO.");
+        }
+
         objDTO.setData(LocalDate.now());
         Movimentacao newObj = mapper.toEntity(objDTO);
         return repository.save(newObj);

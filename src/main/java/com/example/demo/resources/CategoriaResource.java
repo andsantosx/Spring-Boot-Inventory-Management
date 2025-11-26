@@ -44,9 +44,9 @@ public class CategoriaResource {
         return ResponseEntity.created(uri).body(newObj);
     }
 
-    @PutMapping(value = "/{id}")
-    @Operation(summary = "Atualiza uma categoria existente")
-    public ResponseEntity<Categoria> update(@PathVariable Integer id, @Valid @RequestBody CategoriaDTO objDTO) {
+    @PatchMapping(value = "/{id}")
+    @Operation(summary = "Atualiza parcialmente uma categoria existente")
+    public ResponseEntity<Categoria> update(@PathVariable Integer id, @RequestBody CategoriaDTO objDTO) {
         Categoria newObj = service.update(id, objDTO);
         return ResponseEntity.ok().body(newObj);
     }

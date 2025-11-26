@@ -1,6 +1,7 @@
 package com.example.demo.services;
 
 import com.example.demo.domain.Produto;
+import com.example.demo.domain.enums.StatusProduto;
 import com.example.demo.domain.enums.TipoMovimentacao;
 import com.example.demo.dtos.ProdutoDTO;
 import com.example.demo.mappers.ProdutoMapper;
@@ -30,7 +31,7 @@ public class ProdutoService {
 
     @Transactional(readOnly = true)
     public List<ProdutoDTO> findAll() {
-        return repository.findAll().stream().map(produto -> {
+        return repository.findByStatus(StatusProduto.ATIVO).stream().map(produto -> {
             ProdutoDTO dto = mapper.toDTO(produto);
             dto.setSaldo(getSaldo(produto));
             return dto;
@@ -42,6 +43,7 @@ public class ProdutoService {
         if (repository.findBySku(objDTO.getSku()).isPresent()) {
             throw new DataIntegrityViolationException("SKU já cadastrado na base de dados!");
         }
+        objDTO.setStatus(StatusProduto.ATIVO);
         Produto newObj = mapper.toEntity(objDTO);
         return repository.save(newObj);
     }
@@ -57,12 +59,10 @@ public class ProdutoService {
     }
 
     @Transactional
-    public void delete(Integer id) {
-        findById(id);
-        if (repository.getById(id).getMovimentacoes().size() > 0) {
-            throw new DataIntegrityViolationException("Produto possui movimentações e não pode ser deletado!");
-        }
-        repository.deleteById(id);
+    public void softDelete(Integer id) {
+        Produto obj = findById(id);
+        obj.setStatus(StatusProduto.INATIVO);
+        repository.save(obj);
     }
 
     private Integer getSaldo(Produto produto) {

@@ -44,9 +44,9 @@ public class LocalizacaoResource {
         return ResponseEntity.created(uri).body(newObj);
     }
 
-    @PutMapping(value = "/{id}")
-    @Operation(summary = "Atualiza uma localização existente")
-    public ResponseEntity<Localizacao> update(@PathVariable Integer id, @Valid @RequestBody LocalizacaoDTO objDTO) {
+    @PatchMapping(value = "/{id}")
+    @Operation(summary = "Atualiza parcialmente uma localização existente")
+    public ResponseEntity<Localizacao> update(@PathVariable Integer id, @RequestBody LocalizacaoDTO objDTO) {
         Localizacao newObj = service.update(id, objDTO);
         return ResponseEntity.ok().body(newObj);
     }

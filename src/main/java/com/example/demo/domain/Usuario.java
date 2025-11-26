@@ -1,15 +1,13 @@
 package com.example.demo.domain;
 
+import com.example.demo.domain.enums.Perfil;
+import com.example.demo.domain.enums.StatusUsuario;
+import com.fasterxml.jackson.annotation.JsonIgnore;
+import jakarta.persistence.*;
 import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
-
-import jakarta.persistence.Entity;
-import jakarta.persistence.GeneratedValue;
-import jakarta.persistence.GenerationType;
-import jakarta.persistence.Id;
-import jakarta.persistence.OneToMany;
 
 @Entity
 public class Usuario implements Serializable {
@@ -18,17 +16,32 @@ public class Usuario implements Serializable {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Integer id;
-    private String nome;
 
+    @Column(unique = true)
+    private String login;
+    private String nome;
+    private String senha;
+
+    @Enumerated(EnumType.STRING)
+    private Perfil perfil;
+
+    @Enumerated(EnumType.STRING)
+    private StatusUsuario status;
+
+    @JsonIgnore
     @OneToMany(mappedBy = "usuario")
     private List<Movimentacao> movimentacoes = new ArrayList<>();
 
     public Usuario() {
     }
 
-    public Usuario(Integer id, String nome) {
+    public Usuario(Integer id, String login, String nome, String senha, Perfil perfil, StatusUsuario status) {
         this.id = id;
+        this.login = login;
         this.nome = nome;
+        this.senha = senha;
+        this.perfil = perfil;
+        this.status = status;
     }
 
     public Integer getId() {
@@ -39,12 +52,44 @@ public class Usuario implements Serializable {
         this.id = id;
     }
 
+    public String getLogin() {
+        return login;
+    }
+
+    public void setLogin(String login) {
+        this.login = login;
+    }
+
     public String getNome() {
         return nome;
     }
 
     public void setNome(String nome) {
         this.nome = nome;
+    }
+
+    public String getSenha() {
+        return senha;
+    }
+
+    public void setSenha(String senha) {
+        this.senha = senha;
+    }
+
+    public Perfil getPerfil() {
+        return perfil;
+    }
+
+    public void setPerfil(Perfil perfil) {
+        this.perfil = perfil;
+    }
+
+    public StatusUsuario getStatus() {
+        return status;
+    }
+
+    public void setStatus(StatusUsuario status) {
+        this.status = status;
     }
 
     public List<Movimentacao> getMovimentacoes() {
@@ -62,6 +107,8 @@ public class Usuario implements Serializable {
         Usuario usuario = (Usuario) o;
         return Objects.equals(id, usuario.id);
     }
+
+
 
     @Override
     public int hashCode() {

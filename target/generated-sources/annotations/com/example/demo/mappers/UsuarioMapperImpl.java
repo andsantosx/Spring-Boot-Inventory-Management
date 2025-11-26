@@ -1,28 +1,31 @@
 package com.example.demo.mappers;
 
 import com.example.demo.domain.Usuario;
+import com.example.demo.dtos.UsuarioCreateDTO;
 import com.example.demo.dtos.UsuarioDTO;
 import javax.annotation.processing.Generated;
 import org.springframework.stereotype.Component;
 
 @Generated(
     value = "org.mapstruct.ap.MappingProcessor",
-    date = "2025-11-26T08:04:04-0300",
-    comments = "version: 1.5.5.Final, compiler: javac, environment: Java 21.0.9 (Ubuntu)"
+    date = "2025-11-26T08:42:18-0300",
+    comments = "version: 1.5.5.Final, compiler: javac, environment: Java 24.0.2 (Oracle Corporation)"
 )
 @Component
 public class UsuarioMapperImpl implements UsuarioMapper {
 
     @Override
-    public Usuario toEntity(UsuarioDTO dto) {
+    public Usuario toEntity(UsuarioCreateDTO dto) {
         if ( dto == null ) {
             return null;
         }
 
         Usuario usuario = new Usuario();
 
-        usuario.setId( dto.getId() );
+        usuario.setLogin( dto.getLogin() );
         usuario.setNome( dto.getNome() );
+        usuario.setSenha( dto.getSenha() );
+        usuario.setPerfil( dto.getPerfil() );
 
         return usuario;
     }
@@ -36,7 +39,10 @@ public class UsuarioMapperImpl implements UsuarioMapper {
         UsuarioDTO usuarioDTO = new UsuarioDTO();
 
         usuarioDTO.setId( entity.getId() );
+        usuarioDTO.setLogin( entity.getLogin() );
         usuarioDTO.setNome( entity.getNome() );
+        usuarioDTO.setPerfil( entity.getPerfil() );
+        usuarioDTO.setStatus( entity.getStatus() );
 
         return usuarioDTO;
     }
@@ -47,7 +53,17 @@ public class UsuarioMapperImpl implements UsuarioMapper {
             return;
         }
 
-        entity.setId( dto.getId() );
-        entity.setNome( dto.getNome() );
+        if ( dto.getLogin() != null ) {
+            entity.setLogin( dto.getLogin() );
+        }
+        if ( dto.getNome() != null ) {
+            entity.setNome( dto.getNome() );
+        }
+        if ( dto.getPerfil() != null ) {
+            entity.setPerfil( dto.getPerfil() );
+        }
+        if ( dto.getStatus() != null ) {
+            entity.setStatus( dto.getStatus() );
+        }
     }
 }

@@ -1,15 +1,12 @@
 package com.example.demo.dtos;
 
 import com.example.demo.domain.Localizacao;
-import jakarta.validation.constraints.NotBlank;
 import java.io.Serializable;
 
 public class LocalizacaoDTO implements Serializable {
     private static final long serialVersionUID = 1L;
 
     private Integer id;
-
-    @NotBlank(message = "O campo NOME é requerido.")
     private String nome;
 
     public LocalizacaoDTO() {

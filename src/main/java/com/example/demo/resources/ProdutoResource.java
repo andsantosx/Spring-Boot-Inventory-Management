@@ -2,6 +2,7 @@ package com.example.demo.resources;
 
 import com.example.demo.domain.Produto;
 import com.example.demo.dtos.ProdutoDTO;
+import com.example.demo.mappers.ProdutoMapper;
 import com.example.demo.services.ProdutoService;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
@@ -22,15 +23,18 @@ public class ProdutoResource {
     @Autowired
     private ProdutoService service;
 
+    @Autowired
+    private ProdutoMapper mapper;
+
     @GetMapping(value = "/{id}")
     @Operation(summary = "Busca um produto por ID")
-    public ResponseEntity<Produto> findById(@PathVariable Integer id) {
+    public ResponseEntity<ProdutoDTO> findById(@PathVariable Integer id) {
         Produto obj = service.findById(id);
-        return ResponseEntity.ok().body(obj);
+        return ResponseEntity.ok().body(mapper.toDTO(obj));
     }
 
     @GetMapping
-    @Operation(summary = "Lista todos os produtos")
+    @Operation(summary = "Lista todos os produtos ativos")
     public ResponseEntity<List<ProdutoDTO>> findAll() {
         List<ProdutoDTO> list = service.findAll();
         return ResponseEntity.ok().body(list);
@@ -38,23 +42,23 @@ public class ProdutoResource {
 
     @PostMapping
     @Operation(summary = "Cria um novo produto")
-    public ResponseEntity<Produto> create(@Valid @RequestBody ProdutoDTO objDTO) {
+    public ResponseEntity<ProdutoDTO> create(@Valid @RequestBody ProdutoDTO objDTO) {
         Produto newObj = service.create(objDTO);
         URI uri = ServletUriComponentsBuilder.fromCurrentRequest().path("/{id}").buildAndExpand(newObj.getId()).toUri();
-        return ResponseEntity.created(uri).body(newObj);
+        return ResponseEntity.created(uri).body(mapper.toDTO(newObj));
     }
 
-    @PutMapping(value = "/{id}")
-    @Operation(summary = "Atualiza um produto existente")
-    public ResponseEntity<Produto> update(@PathVariable Integer id, @Valid @RequestBody ProdutoDTO objDTO) {
+    @PatchMapping(value = "/{id}")
+    @Operation(summary = "Atualiza parcialmente um produto existente")
+    public ResponseEntity<ProdutoDTO> update(@PathVariable Integer id, @RequestBody ProdutoDTO objDTO) {
         Produto newObj = service.update(id, objDTO);
-        return ResponseEntity.ok().body(newObj);
+        return ResponseEntity.ok().body(mapper.toDTO(newObj));
     }
 
     @DeleteMapping(value = "/{id}")
-    @Operation(summary = "Deleta um produto")
-    public ResponseEntity<Void> delete(@PathVariable Integer id) {
-        service.delete(id);
+    @Operation(summary = "Inativa um produto (Soft Delete)")
+    public ResponseEntity<Void> softDelete(@PathVariable Integer id) {
+        service.softDelete(id);
         return ResponseEntity.noContent().build();
     }
 }

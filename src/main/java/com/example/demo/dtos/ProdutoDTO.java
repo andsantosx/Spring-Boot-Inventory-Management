@@ -1,8 +1,7 @@
 package com.example.demo.dtos;
 
 import com.example.demo.domain.Produto;
-import jakarta.validation.constraints.NotBlank;
-import jakarta.validation.constraints.NotNull;
+import com.example.demo.domain.enums.StatusProduto;
 import java.io.Serializable;
 import java.math.BigDecimal;
 
@@ -10,22 +9,12 @@ public class ProdutoDTO implements Serializable {
     private static final long serialVersionUID = 1L;
 
     private Integer id;
-
-    @NotBlank(message = "O campo SKU é requerido.")
     private String sku;
-
-    @NotBlank(message = "O campo NOME é requerido.")
     private String nome;
-
-    @NotNull(message = "O campo PREÇO DE CUSTO é requerido.")
     private BigDecimal precoCusto;
-
-    @NotNull(message = "O campo CATEGORIA é requerido.")
+    private StatusProduto status;
     private Integer categoriaId;
-
-    @NotNull(message = "O campo LOCALIZAÇÃO é requerido.")
     private Integer localizacaoId;
-
     private Integer saldo;
 
     public ProdutoDTO() {
@@ -36,6 +25,7 @@ public class ProdutoDTO implements Serializable {
         this.sku = obj.getSku();
         this.nome = obj.getNome();
         this.precoCusto = obj.getPrecoCusto();
+        this.status = obj.getStatus();
         this.categoriaId = obj.getCategoria().getId();
         this.localizacaoId = obj.getLocalizacao().getId();
     }
@@ -70,6 +60,14 @@ public class ProdutoDTO implements Serializable {
 
     public void setPrecoCusto(BigDecimal precoCusto) {
         this.precoCusto = precoCusto;
+    }
+
+    public StatusProduto getStatus() {
+        return status;
+    }
+
+    public void setStatus(StatusProduto status) {
+        this.status = status;
     }
 
     public Integer getCategoriaId() {

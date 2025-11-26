@@ -1,12 +1,15 @@
 package com.example.demo.services;
 
 import com.example.demo.domain.Usuario;
+import com.example.demo.domain.enums.StatusUsuario;
+import com.example.demo.dtos.UsuarioCreateDTO;
 import com.example.demo.dtos.UsuarioDTO;
 import com.example.demo.mappers.UsuarioMapper;
 import com.example.demo.repositories.UsuarioRepository;
 import com.example.demo.services.exceptions.DataIntegrityViolationException;
 import com.example.demo.services.exceptions.ObjectNotFoundException;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -22,6 +25,9 @@ public class UsuarioService {
     @Autowired
     private UsuarioMapper mapper;
 
+    @Autowired
+    private PasswordEncoder passwordEncoder;
+
     @Transactional(readOnly = true)
     public Usuario findById(Integer id) {
         return repository.findById(id).orElseThrow(() -> new ObjectNotFoundException("Objeto não encontrado! Id: " + id));
@@ -29,28 +35,34 @@ public class UsuarioService {
 
     @Transactional(readOnly = true)
     public List<UsuarioDTO> findAll() {
-        return repository.findAll().stream().map(mapper::toDTO).collect(Collectors.toList());
+        return repository.findByStatus(StatusUsuario.ATIVO).stream().map(mapper::toDTO).collect(Collectors.toList());
     }
 
     @Transactional
-    public Usuario create(UsuarioDTO objDTO) {
+    public Usuario create(UsuarioCreateDTO objDTO) {
+        if (repository.findByLogin(objDTO.getLogin()).isPresent()) {
+            throw new DataIntegrityViolationException("Login já cadastrado na base de dados!");
+        }
+        objDTO.setSenha(passwordEncoder.encode(objDTO.getSenha()));
         Usuario newObj = mapper.toEntity(objDTO);
+        newObj.setStatus(StatusUsuario.ATIVO);
         return repository.save(newObj);
     }
 
     @Transactional
     public Usuario update(Integer id, UsuarioDTO objDTO) {
         Usuario obj = findById(id);
+        if (repository.findByLogin(objDTO.getLogin()).isPresent() && !repository.findByLogin(objDTO.getLogin()).get().getId().equals(id)) {
+            throw new DataIntegrityViolationException("Login já cadastrado na base de dados!");
+        }
         mapper.updateEntityFromDTO(objDTO, obj);
         return repository.save(obj);
     }
 
     @Transactional
-    public void delete(Integer id) {
-        findById(id);
-        if (repository.getById(id).getMovimentacoes().size() > 0) {
-            throw new DataIntegrityViolationException("Usuário possui movimentações e não pode ser deletado!");
-        }
-        repository.deleteById(id);
+    public void softDelete(Integer id) {
+        Usuario obj = findById(id);
+        obj.setStatus(StatusUsuario.INATIVO);
+        repository.save(obj);
     }
 }

@@ -1,7 +1,9 @@
 package com.example.demo.resources;
 
 import com.example.demo.domain.Usuario;
+import com.example.demo.dtos.UsuarioCreateDTO;
 import com.example.demo.dtos.UsuarioDTO;
+import com.example.demo.mappers.UsuarioMapper;
 import com.example.demo.services.UsuarioService;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
@@ -22,15 +24,18 @@ public class UsuarioResource {
     @Autowired
     private UsuarioService service;
 
+    @Autowired
+    private UsuarioMapper mapper;
+
     @GetMapping(value = "/{id}")
     @Operation(summary = "Busca um usuário por ID")
-    public ResponseEntity<Usuario> findById(@PathVariable Integer id) {
+    public ResponseEntity<UsuarioDTO> findById(@PathVariable Integer id) {
         Usuario obj = service.findById(id);
-        return ResponseEntity.ok().body(obj);
+        return ResponseEntity.ok().body(mapper.toDTO(obj));
     }
 
     @GetMapping
-    @Operation(summary = "Lista todos os usuários")
+    @Operation(summary = "Lista todos os usuários ativos")
     public ResponseEntity<List<UsuarioDTO>> findAll() {
         List<UsuarioDTO> list = service.findAll();
         return ResponseEntity.ok().body(list);
@@ -38,23 +43,23 @@ public class UsuarioResource {
 
     @PostMapping
     @Operation(summary = "Cria um novo usuário")
-    public ResponseEntity<Usuario> create(@Valid @RequestBody UsuarioDTO objDTO) {
+    public ResponseEntity<UsuarioDTO> create(@Valid @RequestBody UsuarioCreateDTO objDTO) {
         Usuario newObj = service.create(objDTO);
         URI uri = ServletUriComponentsBuilder.fromCurrentRequest().path("/{id}").buildAndExpand(newObj.getId()).toUri();
-        return ResponseEntity.created(uri).body(newObj);
+        return ResponseEntity.created(uri).body(mapper.toDTO(newObj));
     }
 
-    @PutMapping(value = "/{id}")
-    @Operation(summary = "Atualiza um usuário existente")
-    public ResponseEntity<Usuario> update(@PathVariable Integer id, @Valid @RequestBody UsuarioDTO objDTO) {
+    @PatchMapping(value = "/{id}")
+    @Operation(summary = "Atualiza parcialmente um usuário existente")
+    public ResponseEntity<UsuarioDTO> update(@PathVariable Integer id, @RequestBody UsuarioDTO objDTO) {
         Usuario newObj = service.update(id, objDTO);
-        return ResponseEntity.ok().body(newObj);
+        return ResponseEntity.ok().body(mapper.toDTO(newObj));
     }
 
     @DeleteMapping(value = "/{id}")
-    @Operation(summary = "Deleta um usuário")
-    public ResponseEntity<Void> delete(@PathVariable Integer id) {
-        service.delete(id);
+    @Operation(summary = "Inativa um usuário (Soft Delete)")
+    public ResponseEntity<Void> softDelete(@PathVariable Integer id) {
+        service.softDelete(id);
         return ResponseEntity.noContent().build();
     }
 }

@@ -7,8 +7,8 @@ import org.springframework.stereotype.Component;
 
 @Generated(
     value = "org.mapstruct.ap.MappingProcessor",
-    date = "2025-11-26T08:04:04-0300",
-    comments = "version: 1.5.5.Final, compiler: javac, environment: Java 21.0.9 (Ubuntu)"
+    date = "2025-11-26T08:42:18-0300",
+    comments = "version: 1.5.5.Final, compiler: javac, environment: Java 24.0.2 (Oracle Corporation)"
 )
 @Component
 public class CategoriaMapperImpl implements CategoriaMapper {
@@ -47,7 +47,11 @@ public class CategoriaMapperImpl implements CategoriaMapper {
             return;
         }
 
-        entity.setId( dto.getId() );
-        entity.setNome( dto.getNome() );
+        if ( dto.getId() != null ) {
+            entity.setId( dto.getId() );
+        }
+        if ( dto.getNome() != null ) {
+            entity.setNome( dto.getNome() );
+        }
     }
 }

@@ -9,8 +9,8 @@ import org.springframework.stereotype.Component;
 
 @Generated(
     value = "org.mapstruct.ap.MappingProcessor",
-    date = "2025-11-26T08:04:04-0300",
-    comments = "version: 1.5.5.Final, compiler: javac, environment: Java 21.0.9 (Ubuntu)"
+    date = "2025-11-26T08:42:18-0300",
+    comments = "version: 1.5.5.Final, compiler: javac, environment: Java 24.0.2 (Oracle Corporation)"
 )
 @Component
 public class ProdutoMapperImpl implements ProdutoMapper {
@@ -29,6 +29,7 @@ public class ProdutoMapperImpl implements ProdutoMapper {
         produto.setSku( dto.getSku() );
         produto.setNome( dto.getNome() );
         produto.setPrecoCusto( dto.getPrecoCusto() );
+        produto.setStatus( dto.getStatus() );
 
         return produto;
     }
@@ -47,6 +48,7 @@ public class ProdutoMapperImpl implements ProdutoMapper {
         produtoDTO.setSku( entity.getSku() );
         produtoDTO.setNome( entity.getNome() );
         produtoDTO.setPrecoCusto( entity.getPrecoCusto() );
+        produtoDTO.setStatus( entity.getStatus() );
 
         return produtoDTO;
     }
@@ -65,10 +67,18 @@ public class ProdutoMapperImpl implements ProdutoMapper {
             entity.setLocalizacao( new Localizacao() );
         }
         produtoDTOToLocalizacao1( dto, entity.getLocalizacao() );
-        entity.setId( dto.getId() );
-        entity.setSku( dto.getSku() );
-        entity.setNome( dto.getNome() );
-        entity.setPrecoCusto( dto.getPrecoCusto() );
+        if ( dto.getSku() != null ) {
+            entity.setSku( dto.getSku() );
+        }
+        if ( dto.getNome() != null ) {
+            entity.setNome( dto.getNome() );
+        }
+        if ( dto.getPrecoCusto() != null ) {
+            entity.setPrecoCusto( dto.getPrecoCusto() );
+        }
+        if ( dto.getStatus() != null ) {
+            entity.setStatus( dto.getStatus() );
+        }
     }
 
     protected Categoria produtoDTOToCategoria(ProdutoDTO produtoDTO) {
@@ -130,7 +140,9 @@ public class ProdutoMapperImpl implements ProdutoMapper {
             return;
         }
 
-        mappingTarget.setId( produtoDTO.getCategoriaId() );
+        if ( produtoDTO.getCategoriaId() != null ) {
+            mappingTarget.setId( produtoDTO.getCategoriaId() );
+        }
     }
 
     protected void produtoDTOToLocalizacao1(ProdutoDTO produtoDTO, Localizacao mappingTarget) {
@@ -138,6 +150,8 @@ public class ProdutoMapperImpl implements ProdutoMapper {
             return;
         }
 
-        mappingTarget.setId( produtoDTO.getLocalizacaoId() );
+        if ( produtoDTO.getLocalizacaoId() != null ) {
+            mappingTarget.setId( produtoDTO.getLocalizacaoId() );
+        }
     }
 }
