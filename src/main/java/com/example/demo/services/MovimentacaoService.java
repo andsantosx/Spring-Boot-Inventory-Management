@@ -1,7 +1,9 @@
 package com.example.demo.services;
 
 import com.example.demo.domain.Movimentacao;
+import com.example.demo.domain.Produto;
 import com.example.demo.domain.Usuario;
+import com.example.demo.domain.enums.StatusProduto;
 import com.example.demo.domain.enums.StatusUsuario;
 import com.example.demo.dtos.MovimentacaoDTO;
 import com.example.demo.mappers.MovimentacaoMapper;
@@ -28,6 +30,9 @@ public class MovimentacaoService {
     @Autowired
     private UsuarioService usuarioService;
 
+    @Autowired
+    private ProdutoService produtoService;
+
     @Transactional(readOnly = true)
     public Movimentacao findById(Integer id) {
         return repository.findById(id).orElseThrow(() -> new ObjectNotFoundException("Objeto não encontrado! Id: " + id));
@@ -40,9 +45,16 @@ public class MovimentacaoService {
 
     @Transactional
     public Movimentacao create(MovimentacaoDTO objDTO) {
+        // Validação do Usuário
         Usuario usuario = usuarioService.findById(objDTO.getUsuarioId());
         if (usuario.getStatus() == StatusUsuario.INATIVO) {
             throw new DataIntegrityViolationException("Não é possível criar movimentação para um usuário INATIVO.");
+        }
+
+        // Validação do Produto
+        Produto produto = produtoService.findById(objDTO.getProdutoId());
+        if (produto.getStatus() == StatusProduto.INATIVO) {
+            throw new DataIntegrityViolationException("Não é possível criar movimentação para um produto INATIVO.");
         }
 
         objDTO.setData(LocalDate.now());

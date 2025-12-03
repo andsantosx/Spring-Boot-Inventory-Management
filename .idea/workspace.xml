@@ -6,22 +6,6 @@
   <component name="ChangeListManager">
     <list default="true" id="e6494cba-36da-47e2-8366-68b83e6a2b10" name="Changes" comment="">
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/com/example/demo/domain/Categoria.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/com/example/demo/domain/Categoria.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/com/example/demo/domain/Localizacao.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/com/example/demo/domain/Localizacao.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/com/example/demo/resources/CategoriaResource.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/com/example/demo/resources/CategoriaResource.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/com/example/demo/resources/LocalizacaoResource.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/com/example/demo/resources/LocalizacaoResource.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/com/example/demo/resources/MovimentacaoResource.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/com/example/demo/resources/MovimentacaoResource.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/target/classes/com/example/demo/domain/Categoria.class" beforeDir="false" afterPath="$PROJECT_DIR$/target/classes/com/example/demo/domain/Categoria.class" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/target/classes/com/example/demo/domain/Localizacao.class" beforeDir="false" afterPath="$PROJECT_DIR$/target/classes/com/example/demo/domain/Localizacao.class" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/target/classes/com/example/demo/resources/CategoriaResource.class" beforeDir="false" afterPath="$PROJECT_DIR$/target/classes/com/example/demo/resources/CategoriaResource.class" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/target/classes/com/example/demo/resources/LocalizacaoResource.class" beforeDir="false" afterPath="$PROJECT_DIR$/target/classes/com/example/demo/resources/LocalizacaoResource.class" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/target/demo-0.0.1-SNAPSHOT.jar" beforeDir="false" afterPath="$PROJECT_DIR$/target/demo-0.0.1-SNAPSHOT.jar" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/target/demo-0.0.1-SNAPSHOT.jar.original" beforeDir="false" afterPath="$PROJECT_DIR$/target/demo-0.0.1-SNAPSHOT.jar.original" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/target/generated-sources/annotations/com/example/demo/mappers/CategoriaMapperImpl.java" beforeDir="false" afterPath="$PROJECT_DIR$/target/generated-sources/annotations/com/example/demo/mappers/CategoriaMapperImpl.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/target/generated-sources/annotations/com/example/demo/mappers/LocalizacaoMapperImpl.java" beforeDir="false" afterPath="$PROJECT_DIR$/target/generated-sources/annotations/com/example/demo/mappers/LocalizacaoMapperImpl.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/target/generated-sources/annotations/com/example/demo/mappers/MovimentacaoMapperImpl.java" beforeDir="false" afterPath="$PROJECT_DIR$/target/generated-sources/annotations/com/example/demo/mappers/MovimentacaoMapperImpl.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/target/generated-sources/annotations/com/example/demo/mappers/ProdutoMapperImpl.java" beforeDir="false" afterPath="$PROJECT_DIR$/target/generated-sources/annotations/com/example/demo/mappers/ProdutoMapperImpl.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/target/generated-sources/annotations/com/example/demo/mappers/UsuarioMapperImpl.java" beforeDir="false" afterPath="$PROJECT_DIR$/target/generated-sources/annotations/com/example/demo/mappers/UsuarioMapperImpl.java" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />

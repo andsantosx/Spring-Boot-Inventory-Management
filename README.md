@@ -3,17 +3,17 @@
 **Alunos:** Anderson Santos, Lorenzo Gotuzzo  
 **Curso:** Engenharia de Software
 
-Este documento apresenta a solução técnica e a arquitetura do **StockControl Pro**, uma API RESTful para gerenciamento de estoque desenvolvida com Spring Boot, incluindo funcionalidades avançadas como segurança de senhas, perfis de usuário e deleção lógica (soft delete) para produtos e usuários.
+Este documento apresenta a solução técnica e a arquitetura do **StockControl Pro**, uma API RESTful para gerenciamento de estoque desenvolvida com Spring Boot, incluindo funcionalidades avançadas como segurança de senhas, perfis de usuário e deleção lógica (soft delete) com validações explícitas.
 
 ---
 
 ## 1. Visão Geral
 
 ### O Problema
-O StockControl Pro resolve a ineficiência e a falta de rastreabilidade no gerenciamento de estoques. As principais dores são a falta de auditoria nas movimentações, a inconsistência no saldo de estoque, a desorganização para localizar produtos e a falta de um controle de acesso seguro para os operadores do sistema.
+O StockControl Pro resolve a ineficiência e a falta de rastreabilidade no gerenciamento de estoques. As principais dores são a falta de auditoria nas movimentações, a inconsistência no saldo de estoque, a desorganização para localizar produtos e a falta de um controle de acesso seguro e com feedback claro para os operadores do sistema.
 
 ### A Solução
-A solução é uma API RESTful que centraliza o controle de estoque. Ela automatiza o cálculo de saldo em tempo real, digitaliza cada transação e garante a segurança com senhas criptografadas e perfis de acesso (`ADMIN`, `OPERADOR`). A funcionalidade de "soft delete" permite inativar produtos e usuários sem perder o histórico de movimentações, garantindo a integridade dos dados.
+A solução é uma API RESTful que centraliza o controle de estoque. Ela automatiza o cálculo de saldo em tempo real, digitaliza cada transação e garante a segurança com senhas criptografadas e perfis de acesso. A funcionalidade de "soft delete" permite inativar produtos e usuários sem perder o histórico, e o sistema agora fornece mensagens de erro claras para operações inválidas, como tentar inativar um recurso que já está inativo.
 
 ---
 
@@ -69,7 +69,9 @@ A API do StockControl Pro é autodocumentada usando SpringDoc (Swagger).
     **[http://localhost:8080/swagger-ui/index.html](http://localhost:8080/swagger-ui/index.html)**
 
 ### Como Utilizar
-Na interface do Swagger, você pode explorar e testar todos os endpoints. Ao criar um usuário, a senha enviada será automaticamente criptografada com BCrypt. Ao deletar um produto ou usuário, ele será apenas inativado no banco de dados.
+Na interface do Swagger, você pode explorar e testar todos os endpoints. O sistema agora fornece feedback claro para operações de deleção, como:
+*   `400 Bad Request` com a mensagem `"Este usuário já está inativo."` se você tentar inativar o mesmo usuário duas vezes.
+*   `400 Bad Request` com a mensagem `"Categoria possui produtos e não pode ser deletada!"` se você tentar deletar uma categoria que ainda tem produtos associados.
 
 ---
 
@@ -79,11 +81,13 @@ Na interface do Swagger, você pode explorar e testar todos os endpoints. Ao cri
 *   **Criptografia de Senhas**: As senhas dos usuários são armazenadas no banco de dados de forma segura usando o `BCryptPasswordEncoder`.
 *   **Perfis de Acesso**: A entidade `Usuario` possui um `Perfil` (`ADMIN` ou `OPERADOR`), permitindo a futura implementação de autorizações por tipo de usuário.
 
-### Deleção Lógica (Soft Delete)
+### Deleção Lógica (Soft Delete) com Validações
 *   **Status do Produto e Usuário**: As entidades `Produto` e `Usuario` possuem um campo de `Status` (`ATIVO` ou `INATIVO`).
 *   **Integridade do Histórico**: Ao invés de deletar um registro do banco (`DELETE`), o sistema agora altera seu status para `INATIVO`. Isso preserva a integridade do histórico de movimentações.
+*   **Validações Explícitas**:
+    *   O sistema impede a inativação de um recurso que já está inativo, retornando um erro `400`.
+    *   O sistema impede a deleção de `Categorias` ou `Localizacoes` que possuem produtos associados, protegendo a integridade referencial.
 *   **Busca Inteligente**: Os endpoints `GET /produtos` e `GET /usuarios` foram configurados para retornar apenas os registros `ATIVOS`.
-*   **Regra de Negócio**: O sistema impede que um usuário `INATIVO` crie novas movimentações de estoque.
 
 ### Estrutura de Pacotes
 ```
@@ -92,18 +96,18 @@ src/main/java/com/example/demo/
 ├── domain/              // Entidades e Enums (Perfil, StatusProduto, StatusUsuario)
 ├── dtos/                // DTOs para request e response
 ├── repositories/        // Interfaces de acesso ao banco
-├── services/            // Lógica de negócio (criptografia, soft delete)
+├── services/            // Lógica de negócio (criptografia, soft delete, validações)
 ├── resources/           // Endpoints REST
 ├── mappers/             // Mapeamento entre DTOs e Entidades
 └── DemoApplication.java
 ```
 
 ### As Camadas e Suas Responsabilidades
-*   **Resource (Controller)**: Porta de entrada da API. Lida com HTTP, recebe DTOs, aciona validações e retorna `ResponseEntity`.
-*   **Service**: Cérebro da aplicação. Contém a lógica de negócio, como criptografia de senhas e regras de soft delete.
-*   **Repository**: Camada de acesso a dados, com métodos de busca customizados como `findByLogin` e `findByStatus`.
-*   **Entity**: Representa as tabelas do banco, agora com campos de `status` e `perfil`.
-*   **DTO**: Contrato de dados, com DTOs específicos para criação (`UsuarioCreateDTO`) para lidar com a senha.
+*   **Resource (Controller)**: Porta de entrada da API. Lida com HTTP, recebe DTOs e retorna `ResponseEntity`.
+*   **Service**: Cérebro da aplicação. Contém a lógica de negócio, como criptografia de senhas e regras de validação.
+*   **Repository**: Camada de acesso a dados.
+*   **Entity**: Representa as tabelas do banco.
+*   **DTO**: Contrato de dados com o mundo exterior.
 *   **MapStruct**: Ferramenta para conversão automática entre DTOs e Entidades.
 *   **Tratamento de Exceções**: `@ControllerAdvice` global para respostas de erro padronizadas.
 

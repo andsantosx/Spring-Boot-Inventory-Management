@@ -61,6 +61,9 @@ public class ProdutoService {
     @Transactional
     public void softDelete(Integer id) {
         Produto obj = findById(id);
+        if (obj.getStatus() == StatusProduto.INATIVO) {
+            throw new DataIntegrityViolationException("Este produto já está inativo.");
+        }
         obj.setStatus(StatusProduto.INATIVO);
         repository.save(obj);
     }

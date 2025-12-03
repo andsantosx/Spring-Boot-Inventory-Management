@@ -62,6 +62,9 @@ public class UsuarioService {
     @Transactional
     public void softDelete(Integer id) {
         Usuario obj = findById(id);
+        if (obj.getStatus() == StatusUsuario.INATIVO) {
+            throw new DataIntegrityViolationException("Este usuário já está inativo.");
+        }
         obj.setStatus(StatusUsuario.INATIVO);
         repository.save(obj);
     }
