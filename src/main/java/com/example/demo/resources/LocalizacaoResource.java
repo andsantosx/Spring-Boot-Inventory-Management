@@ -2,6 +2,7 @@ package com.example.demo.resources;
 
 import com.example.demo.domain.Localizacao;
 import com.example.demo.dtos.LocalizacaoDTO;
+import com.example.demo.mappers.LocalizacaoMapper;
 import com.example.demo.services.LocalizacaoService;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
@@ -22,11 +23,14 @@ public class LocalizacaoResource {
     @Autowired
     private LocalizacaoService service;
 
+    @Autowired
+    private LocalizacaoMapper mapper;
+
     @GetMapping(value = "/{id}")
     @Operation(summary = "Busca uma localização por ID")
-    public ResponseEntity<Localizacao> findById(@PathVariable Integer id) {
+    public ResponseEntity<LocalizacaoDTO> findById(@PathVariable Integer id) {
         Localizacao obj = service.findById(id);
-        return ResponseEntity.ok().body(obj);
+        return ResponseEntity.ok().body(mapper.toDTO(obj));
     }
 
     @GetMapping
@@ -38,17 +42,17 @@ public class LocalizacaoResource {
 
     @PostMapping
     @Operation(summary = "Cria uma nova localização")
-    public ResponseEntity<Localizacao> create(@Valid @RequestBody LocalizacaoDTO objDTO) {
+    public ResponseEntity<LocalizacaoDTO> create(@Valid @RequestBody LocalizacaoDTO objDTO) {
         Localizacao newObj = service.create(objDTO);
         URI uri = ServletUriComponentsBuilder.fromCurrentRequest().path("/{id}").buildAndExpand(newObj.getId()).toUri();
-        return ResponseEntity.created(uri).body(newObj);
+        return ResponseEntity.created(uri).body(mapper.toDTO(newObj));
     }
 
     @PatchMapping(value = "/{id}")
     @Operation(summary = "Atualiza parcialmente uma localização existente")
-    public ResponseEntity<Localizacao> update(@PathVariable Integer id, @RequestBody LocalizacaoDTO objDTO) {
+    public ResponseEntity<LocalizacaoDTO> update(@PathVariable Integer id, @RequestBody LocalizacaoDTO objDTO) {
         Localizacao newObj = service.update(id, objDTO);
-        return ResponseEntity.ok().body(newObj);
+        return ResponseEntity.ok().body(mapper.toDTO(newObj));
     }
 
     @DeleteMapping(value = "/{id}")
